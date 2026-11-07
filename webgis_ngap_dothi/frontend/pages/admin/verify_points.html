@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duyệt báo cáo - Admin | WebGIS Ngập Đô Thị</title>
+
+  <link rel="stylesheet" href="../../css/global/reset.css" />
+  <link rel="stylesheet" href="../../css/global/variables.css" />
+  <link rel="stylesheet" href="../../css/global/components.css" />
+  <link rel="stylesheet" href="../../css/layouts/layout_admin.css" />
+  <link rel="stylesheet" href="../../css/pages/admin_verify.css" />
+</head>
+<body>
+<div class="admin-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">🌊 WebGIS Ngập</div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html"       class="nav-link">📊 Dashboard</a>
+      <a href="verify_points.html"   class="nav-link active">✅ Duyệt báo cáo</a>
+      <a href="manage_layers.html"   class="nav-link">🗄️ Lớp bản đồ</a>
+      <a href="manage_users.html"    class="nav-link">👥 Người dùng</a>
+      <a href="flood_scenarios.html" class="nav-link">🌊 Kịch bản ngập</a>
+      <a href="history_reports.html" class="nav-link">📋 Lịch sử</a>
+      <a href="map_admin.html"       class="nav-link">🗺️ Bản đồ</a>
+      <a href="settings.html"        class="nav-link">⚙️ Cài đặt</a>
+      <a href="logs.html"            class="nav-link">📄 Nhật ký</a>
+    </nav>
+  </aside>
+
+  <header class="topbar">
+    <h1 class="topbar-title">✅ Duyệt báo cáo ngập</h1>
+    <div class="topbar-actions">
+      <select class="form-control" id="status-filter" style="width:160px">
+        <option value="">Tất cả</option>
+        <option value="pending"  selected>Chờ duyệt</option>
+        <option value="verified">Đã xác minh</option>
+        <option value="rejected">Từ chối</option>
+      </select>
+      <button class="btn btn-sm btn-danger" id="btn-logout">🚪 Đăng xuất</button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h2 class="page-title">Danh sách báo cáo</h2>
+      <span id="page-info" class="text-muted" style="font-size:0.85rem"></span>
+    </div>
+
+    <div class="card">
+      <div class="card-body" style="padding:0; overflow-x:auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tọa độ</th>
+              <th>Mô tả</th>
+              <th>Trạng thái</th>
+              <th>Ngày gửi</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="reports-tbody">
+            <tr><td colspan="6" class="text-center text-muted">Đang tải...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer d-flex gap-sm" style="justify-content:flex-end">
+        <button class="btn btn-sm btn-secondary" id="btn-prev">◀ Trước</button>
+        <button class="btn btn-sm btn-primary"   id="btn-next">Tiếp ▶</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  import { initVerifyUI } from "../../js/components/verifyUI.js";
+  import Auth from "../../js/utils/auth.js";
+  initVerifyUI();
+  document.getElementById("btn-logout")?.addEventListener("click", () => Auth.logout());
+</script>
+</body>
+</html>
+

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - WebGIS Ngập Đô Thị</title>
+
+  <!-- CSS - Thứ tự quan trọng: global → layout → page -->
+  <link rel="stylesheet" href="../../css/global/reset.css" />
+  <link rel="stylesheet" href="../../css/global/variables.css" />
+  <link rel="stylesheet" href="../../css/global/components.css" />
+  <link rel="stylesheet" href="../../css/layouts/layout_admin.css" />
+  <!-- CSS trang con sẽ được thêm vào đây: <link rel="stylesheet" href="../../css/pages/admin_*.css" /> -->
+</head>
+<body>
+
+<!-- ================================================================
+     SIDEBAR
+     ================================================================ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="../../assets/img/logo.png" alt="Logo" onerror="this.style.display='none'" />
+    <span>🌊 WebGIS Ngập</span>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-title">Tổng quan</div>
+    <a href="dashboard.html"       class="nav-link" data-page="dashboard">
+      <span class="nav-icon">📊</span> Dashboard
+    </a>
+
+    <div class="nav-section-title">Quản lý ngập</div>
+    <a href="verify_points.html"   class="nav-link" data-page="verify_points">
+      <span class="nav-icon">✅</span> Duyệt báo cáo
+    </a>
+    <a href="flood_scenarios.html" class="nav-link" data-page="flood_scenarios">
+      <span class="nav-icon">🌊</span> Kịch bản ngập
+    </a>
+    <a href="map_admin.html"       class="nav-link" data-page="map_admin">
+      <span class="nav-icon">🗺️</span> Bản đồ Admin
+    </a>
+
+    <div class="nav-section-title">Dữ liệu</div>
+    <a href="manage_layers.html"   class="nav-link" data-page="manage_layers">
+      <span class="nav-icon">🗄️</span> Lớp bản đồ
+    </a>
+    <a href="history_reports.html" class="nav-link" data-page="history_reports">
+      <span class="nav-icon">📋</span> Lịch sử báo cáo
+    </a>
+
+    <div class="nav-section-title">Hệ thống</div>
+    <a href="manage_users.html"    class="nav-link" data-page="manage_users">
+      <span class="nav-icon">👥</span> Người dùng
+    </a>
+    <a href="settings.html"        class="nav-link" data-page="settings">
+      <span class="nav-icon">⚙️</span> Cài đặt
+    </a>
+    <a href="logs.html"            class="nav-link" data-page="logs">
+      <span class="nav-icon">📄</span> Nhật ký
+    </a>
+
+  </nav>
+
+  <div class="sidebar-footer">WebGIS Ngập v1.0</div>
+</aside>
+
+<!-- ================================================================
+     TOPBAR
+     ================================================================ -->
+<header class="topbar">
+  <div class="d-flex align-center gap-sm">
+    <button class="btn btn-sm btn-secondary" id="btn-toggle-sidebar" title="Thu/mở sidebar">☰</button>
+    <h1 class="topbar-title" id="page-title">Dashboard</h1>
+  </div>
+
+  <div class="topbar-actions">
+    <span id="admin-username" class="text-muted" style="font-size:0.85rem"></span>
+    <div class="user-info" id="user-menu">
+      <div class="user-avatar" id="user-avatar">A</div>
+      <span id="user-name">Admin</span>
+    </div>
+    <button class="btn btn-sm btn-danger" id="btn-logout">🚪 Đăng xuất</button>
+  </div>
+</header>
+
+<!-- ================================================================
+     MAIN CONTENT — trang con inject vào đây
+     ================================================================ -->
+<main class="main-content" id="main-content">
+  <!-- Nội dung trang con được nhúng vào đây qua JS hoặc iframe -->
+</main>
+
+<!-- ================================================================
+     SCRIPTS
+     ================================================================ -->
+<script type="module">
+  import Auth   from "../../js/utils/auth.js";
+  import Notify from "../../js/utils/notify.js";
+
+  // Kiểm tra quyền Admin
+  Auth.requireAdminAuth();
+
+  // Hiển thị thông tin user
+  const user = Auth.getUser();
+  if (user) {
+    document.getElementById("user-name").textContent   = user.full_name || user.username;
+    document.getElementById("user-avatar").textContent = (user.full_name || user.username)[0].toUpperCase();
+  }
+
+  // Đánh dấu nav-link active theo trang hiện tại
+  const currentPage = window.location.pathname.split("/").pop().replace(".html", "");
+  document.querySelectorAll(".nav-link[data-page]").forEach(link => {
+    if (link.dataset.page === currentPage) link.classList.add("active");
+  });
+
+  // Toggle sidebar
+  document.getElementById("btn-toggle-sidebar")?.addEventListener("click", () => {
+    document.getElementById("sidebar").classList.toggle("open");
+  });
+
+  // Đăng xuất
+  document.getElementById("btn-logout")?.addEventListener("click", () => {
+    if (Notify.confirm("Bạn có muốn đăng xuất?")) Auth.logout();
+  });
+</script>
+
+</body>
+</html>
+

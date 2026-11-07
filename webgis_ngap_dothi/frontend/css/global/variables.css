@@ -1,0 +1,97 @@
+/* ============================================================
+   variables.css - CSS Custom Properties toàn hệ thống
+   Import file này đầu tiên trong mọi trang
+   ============================================================ */
+
+:root {
+  /* --- Màu chủ đạo --- */
+  --color-primary:       #2c7be5;
+  --color-primary-dark:  #1a5fc7;
+  --color-secondary:     #6c757d;
+  --color-accent:        #00b4d8;
+
+  /* --- Màu trạng thái --- */
+  --color-success:       #27ae60;
+  --color-warning:       #f39c12;
+  --color-danger:        #e74c3c;
+  --color-info:          #2980b9;
+
+  /* --- Màu ngập theo mức độ --- */
+  --color-flood-low:     #ffd700;
+  --color-flood-medium:  #ff6b35;
+  --color-flood-high:    #c0392b;
+
+  /* --- Màu nền --- */
+  --bg-primary:          #ffffff;
+  --bg-secondary:        #f8f9fa;
+  --bg-dark:             #1a2035;
+  --bg-sidebar:          #0f1726;
+  --bg-card:             #ffffff;
+
+  /* --- Màu chữ --- */
+  --text-primary:        #212529;
+  --text-secondary:      #6c757d;
+  --text-muted:          #adb5bd;
+  --text-light:          #ffffff;
+  --text-on-dark:        #e9ecef;
+
+  /* --- Đường viền --- */
+  --border-color:        #dee2e6;
+  --border-radius-sm:    4px;
+  --border-radius:       8px;
+  --border-radius-lg:    12px;
+  --border-radius-pill:  50px;
+
+  /* --- Font --- */
+  --font-family:         "Segoe UI", "Roboto", "Arial", sans-serif;
+  --font-size-xs:        0.75rem;
+  --font-size-sm:        0.875rem;
+  --font-size-base:      1rem;
+  --font-size-lg:        1.125rem;
+  --font-size-xl:        1.25rem;
+  --font-size-2xl:       1.5rem;
+  --font-weight-normal:  400;
+  --font-weight-medium:  500;
+  --font-weight-bold:    700;
+
+  /* --- Spacing --- */
+  --spacing-xs:          4px;
+  --spacing-sm:          8px;
+  --spacing-md:          16px;
+  --spacing-lg:          24px;
+  --spacing-xl:          32px;
+  --spacing-2xl:         48px;
+
+  /* --- Layout --- */
+  --sidebar-width:       260px;
+  --topbar-height:       60px;
+  --map-height:          calc(100vh - var(--topbar-height));
+
+  /* --- Shadow --- */
+  --shadow-sm:           0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md:           0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg:           0 8px 24px rgba(0,0,0,0.20);
+
+  /* --- Transition --- */
+  --transition-fast:     0.15s ease;
+  --transition-normal:   0.3s ease;
+
+  /* --- Z-index --- */
+  --z-sidebar:           100;
+  --z-topbar:            200;
+  --z-modal:             1000;
+  --z-notify:            9999;
+}
+
+/* Dark mode (tùy chọn) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary:    #1a2035;
+    --bg-secondary:  #0f1726;
+    --bg-card:       #243055;
+    --text-primary:  #e9ecef;
+    --text-secondary:#adb5bd;
+    --border-color:  #2d3a5a;
+  }
+}
+

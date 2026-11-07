@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập - WebGIS Ngập Đô Thị</title>
+
+  <link rel="stylesheet" href="../../css/global/reset.css" />
+  <link rel="stylesheet" href="../../css/global/variables.css" />
+  <link rel="stylesheet" href="../../css/global/components.css" />
+</head>
+<body style="background: linear-gradient(135deg, var(--bg-dark) 0%, #1a4a7a 100%); min-height:100vh; display:flex; align-items:center; justify-content:center">
+
+<div style="width:100%; max-width:420px; padding: var(--spacing-md)">
+
+  <div class="card" style="box-shadow: var(--shadow-lg)">
+    <div class="card-body" style="padding: var(--spacing-xl)">
+
+      <!-- Logo & tiêu đề -->
+      <div style="text-align:center; margin-bottom: var(--spacing-xl)">
+        <div style="font-size:3rem; margin-bottom:var(--spacing-sm)">🌊</div>
+        <h1 style="font-size:var(--font-size-2xl); color:var(--color-primary)">WebGIS Ngập</h1>
+        <p style="color:var(--text-secondary); font-size:var(--font-size-sm)">Hệ thống cảnh báo ngập đô thị</p>
+      </div>
+
+      <!-- Form đăng nhập -->
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="username">👤 Tên đăng nhập</label>
+          <input type="text" class="form-control" id="username"
+                 placeholder="Nhập tên đăng nhập" required autocomplete="username" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">🔒 Mật khẩu</label>
+          <div style="position:relative">
+            <input type="password" class="form-control" id="password"
+                   placeholder="Nhập mật khẩu" required autocomplete="current-password"
+                   style="padding-right:40px" />
+            <button type="button" id="btn-toggle-pw" title="Hiện/ẩn mật khẩu"
+              style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.1rem">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div id="login-error" style="display:none; color:var(--color-danger); font-size:var(--font-size-sm); margin-bottom:var(--spacing-md)"></div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login">
+          🔑 Đăng nhập
+        </button>
+      </form>
+
+      <div style="text-align:center; margin-top:var(--spacing-lg)">
+        <p style="font-size:var(--font-size-sm); color:var(--text-secondary)">
+          Chưa có tài khoản? <a href="#" id="link-register">Đăng ký ngay</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Form đăng ký (ẩn ban đầu) -->
+  <div class="card" id="register-card" style="margin-top:var(--spacing-md); display:none">
+    <div class="card-body">
+      <h3 style="margin-bottom:var(--spacing-md)">📝 Đăng ký tài khoản</h3>
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label">Tên đăng nhập</label>
+          <input type="text" class="form-control" id="reg-username" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="reg-email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mật khẩu</label>
+          <input type="password" class="form-control" id="reg-password" minlength="6" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Họ và tên</label>
+          <input type="text" class="form-control" id="reg-fullname" />
+        </div>
+        <button type="submit" class="btn btn-success btn-block">✅ Tạo tài khoản</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import ApiClient from "../../js/api/apiClient.js";
+  import Auth      from "../../js/utils/auth.js";
+  import Notify    from "../../js/utils/notify.js";
+
+  // Nếu đã đăng nhập → redirect
+  if (Auth.isLoggedIn()) {
+    window.location.href = Auth.isAdmin()
+      ? "/frontend/pages/admin/dashboard.html"
+      : "index_map.html";
+  }
+
+  // Toggle password visibility
+  document.getElementById("btn-toggle-pw")?.addEventListener("click", () => {
+    const pw = document.getElementById("password");
+    pw.type = pw.type === "password" ? "text" : "password";
+  });
+
+  // Toggle register form
+  document.getElementById("link-register")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const card = document.getElementById("register-card");
+    card.style.display = card.style.display === "none" ? "" : "none";
+  });
+
+  // Login
+  document.getElementById("login-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const errEl    = document.getElementById("login-error");
+    const btn      = document.getElementById("btn-login");
+
+    btn.disabled = true;
+    btn.textContent = "Đang đăng nhập...";
+    errEl.style.display = "none";
+
+    try {
+      const data = await ApiClient.auth.login(username, password);
+      if (data.access_token) {
+        Auth.handleLoginSuccess(data);
+      } else {
+        throw new Error(data.detail || "Đăng nhập thất bại");
+      }
+    } catch (err) {
+      errEl.style.display = "";
+      errEl.textContent = "❌ " + (err.message || "Sai tên đăng nhập hoặc mật khẩu");
+      btn.disabled = false;
+      btn.textContent = "🔑 Đăng nhập";
+    }
+  });
+
+  // Register
+  document.getElementById("register-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      await ApiClient.auth.register({
+        username:  document.getElementById("reg-username").value,
+        email:     document.getElementById("reg-email").value,
+        password:  document.getElementById("reg-password").value,
+        full_name: document.getElementById("reg-fullname").value,
+      });
+      Notify.success("Tạo tài khoản thành công! Vui lòng đăng nhập.");
+      document.getElementById("register-card").style.display = "none";
+    } catch (err) {
+      Notify.error("Đăng ký thất bại: " + err.message);
+    }
+  });
+</script>
+
+</body>
+</html>
+

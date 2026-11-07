@@ -1,0 +1,9 @@
+/* admin_verify.css - CSS riêng cho trang duyệt báo cáo */
+
+.table td:nth-child(3) {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+

@@ -1,0 +1,32 @@
+/* user_map.css - CSS riêng cho trang bản đồ người dùng */
+
+/* Override Leaflet controls */
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: var(--shadow-md) !important;
+}
+.leaflet-control-zoom a {
+  border-radius: var(--border-radius) !important;
+  border: none !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  font-size: 1.1rem !important;
+}
+
+/* Flood marker */
+.flood-marker {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  border: 2px solid #fff;
+  box-shadow: var(--shadow-sm);
+}
+.flood-marker.severity-low    { background: var(--color-flood-low); }
+.flood-marker.severity-medium { background: var(--color-flood-medium); }
+.flood-marker.severity-high   { background: var(--color-flood-high); }
+
+/* Leaflet popup */
+.leaflet-popup-content { font-size: var(--font-size-sm); line-height: 1.6; }
+.leaflet-popup-content b { color: var(--color-primary); }
+

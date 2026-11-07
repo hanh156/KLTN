@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Admin | WebGIS Ngập Đô Thị</title>
+
+  <link rel="stylesheet" href="../../css/global/reset.css" />
+  <link rel="stylesheet" href="../../css/global/variables.css" />
+  <link rel="stylesheet" href="../../css/global/components.css" />
+  <link rel="stylesheet" href="../../css/layouts/layout_admin.css" />
+  <link rel="stylesheet" href="../../css/pages/admin_dashboard.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- Nhúng layout admin (sidebar + topbar) -->
+<!-- Trong dự án thực, dùng template engine hoặc Web Components -->
+<!-- Ở đây dùng iframe hoặc include JS để load layout -->
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">🌊 WebGIS Ngập</div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html"       class="nav-link active">📊 Dashboard</a>
+      <a href="verify_points.html"   class="nav-link">✅ Duyệt báo cáo</a>
+      <a href="manage_layers.html"   class="nav-link">🗄️ Lớp bản đồ</a>
+      <a href="manage_users.html"    class="nav-link">👥 Người dùng</a>
+      <a href="flood_scenarios.html" class="nav-link">🌊 Kịch bản ngập</a>
+      <a href="history_reports.html" class="nav-link">📋 Lịch sử</a>
+      <a href="map_admin.html"       class="nav-link">🗺️ Bản đồ</a>
+      <a href="settings.html"        class="nav-link">⚙️ Cài đặt</a>
+      <a href="logs.html"            class="nav-link">📄 Nhật ký</a>
+    </nav>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <h1 class="topbar-title">📊 Dashboard</h1>
+    <div class="topbar-actions">
+      <button class="btn btn-sm btn-danger" id="btn-logout">🚪 Đăng xuất</button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h2 class="page-title">Thống kê tổng quan</h2>
+      <select class="form-control" id="scenario-select" style="width:160px">
+        <option value="100">Mưa 100mm</option>
+        <option value="200">Mưa 200mm</option>
+        <option value="300">Mưa 300mm</option>
+      </select>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card" style="border-left-color: var(--color-primary)">
+        <div class="stat-icon">📍</div>
+        <div>
+          <div class="stat-value" id="stat-points-100">—</div>
+          <div class="stat-label">Điểm ngập (100mm)</div>
+        </div>
+      </div>
+      <div class="stat-card" style="border-left-color: var(--color-warning)">
+        <div class="stat-icon">🌊</div>
+        <div>
+          <div class="stat-value" id="stat-points-200">—</div>
+          <div class="stat-label">Điểm ngập (200mm)</div>
+        </div>
+      </div>
+      <div class="stat-card" style="border-left-color: var(--color-danger)">
+        <div class="stat-icon">⚠️</div>
+        <div>
+          <div class="stat-value" id="stat-points-300">—</div>
+          <div class="stat-label">Điểm ngập (300mm)</div>
+        </div>
+      </div>
+      <div class="stat-card" style="border-left-color: var(--color-success)">
+        <div class="stat-icon">✅</div>
+        <div>
+          <div class="stat-value" id="stat-verified">—</div>
+          <div class="stat-label">Báo cáo đã duyệt</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md)">
+      <div class="card">
+        <div class="card-header">🥧 Phân bố mức độ ngập</div>
+        <div class="card-body">
+          <canvas id="severity-chart" height="250"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">📊 So sánh theo kịch bản</div>
+        <div class="card-body">
+          <canvas id="scenario-chart" height="250"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script type="module">
+  import { initDashboardUI } from "../../js/components/dashboardUI.js";
+  import Auth from "../../js/utils/auth.js";
+
+  initDashboardUI();
+  document.getElementById("btn-logout")?.addEventListener("click", () => Auth.logout());
+</script>
+
+</body>
+</html>
+

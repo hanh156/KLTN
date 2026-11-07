@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Báo cáo điểm ngập - WebGIS Ngập Đô Thị</title>
+
+  <link rel="stylesheet" href="../../css/global/reset.css" />
+  <link rel="stylesheet" href="../../css/global/variables.css" />
+  <link rel="stylesheet" href="../../css/global/components.css" />
+  <link rel="stylesheet" href="../../css/layouts/layout_user.css" />
+  <link rel="stylesheet" href="../../css/pages/user_report.css" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+<header class="user-topbar">
+  <div class="topbar-brand">🌊 WebGIS Ngập Đô Thị</div>
+  <nav class="topbar-nav">
+    <a href="index_map.html">🗺️ Bản đồ</a>
+    <a href="report_form.html" class="active">📢 Báo cáo</a>
+    <a href="my_reports.html">📋 Của tôi</a>
+    <a href="flood_info.html">ℹ️ Thông tin</a>
+  </nav>
+  <div class="topbar-right">
+    <button class="btn btn-sm btn-danger" id="btn-logout">🚪 Đăng xuất</button>
+  </div>
+</header>
+
+<div style="margin-top: var(--topbar-height); display:grid; grid-template-columns: 1fr 400px; height: calc(100vh - var(--topbar-height))">
+
+  <!-- Bản đồ chọn vị trí -->
+  <div id="map" style="height:100%"></div>
+
+  <!-- Form báo cáo -->
+  <div style="padding: var(--spacing-lg); overflow-y:auto; background: var(--bg-secondary)">
+    <h2 style="margin-bottom:var(--spacing-lg)">📢 Gửi báo cáo điểm ngập</h2>
+
+    <div class="card">
+      <div class="card-body">
+        <form id="report-form">
+
+          <div class="form-group">
+            <label class="form-label">📍 Vị trí báo cáo <span style="color:var(--color-danger)">*</span></label>
+            <div class="d-flex gap-sm" style="margin-bottom:var(--spacing-sm)">
+              <button type="button" class="btn btn-outline btn-block" id="btn-get-gps">
+                📡 Dùng GPS hiện tại
+              </button>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-secondary)">
+              Hoặc nhấn vào bản đồ để chọn vị trí:
+            </p>
+            <div style="padding:8px; background:var(--bg-secondary); border-radius:var(--border-radius); margin-top:var(--spacing-xs)">
+              <span id="selected-location" style="font-weight:600; color:var(--color-primary)">Chưa chọn vị trí</span>
+            </div>
+
+            <!-- Hidden fields tọa độ -->
+            <input type="hidden" id="report-lng" name="longitude" required />
+            <input type="hidden" id="report-lat" name="latitude"  required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="report-desc">📝 Mô tả tình trạng ngập</label>
+            <textarea class="form-control" id="report-desc" name="description"
+                      rows="4" placeholder="Ví dụ: Ngập sâu khoảng 30cm, xe máy không đi được..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="report-image">📷 Hình ảnh (URL)</label>
+            <input type="url" class="form-control" id="report-image"
+                   placeholder="https://..." name="image_url" />
+            <small style="color:var(--text-muted)">Dán link ảnh đã upload lên cloud</small>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg">
+            🚀 Gửi báo cáo
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:var(--spacing-md)">
+      <div class="card-body">
+        <h4 style="margin-bottom:var(--spacing-sm)">ℹ️ Hướng dẫn</h4>
+        <ol style="padding-left:1.2rem; font-size:0.875rem; color:var(--text-secondary); line-height:1.8">
+          <li>Nhấn vào bản đồ hoặc dùng GPS để chọn vị trí ngập</li>
+          <li>Mô tả ngắn gọn tình trạng ngập tại điểm đó</li>
+          <li>Thêm ảnh để Admin dễ xác minh hơn (không bắt buộc)</li>
+          <li>Nhấn "Gửi báo cáo" — Admin sẽ xem xét và duyệt</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+  import { initMap }        from "../../js/map/mapCore.js";
+  import { initReportFormUI } from "../../js/components/reportFormUI.js";
+  import Auth from "../../js/utils/auth.js";
+
+  Auth.requireAuth();
+  initMap("map", { center: [10.8231, 106.6297], zoom: 13 });
+  initReportFormUI();
+
+  document.getElementById("btn-logout")?.addEventListener("click", () => Auth.logout());
+</script>
+
+</body>
+</html>
+

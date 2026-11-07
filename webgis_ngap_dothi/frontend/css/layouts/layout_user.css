@@ -1,0 +1,167 @@
+/* ============================================================
+   layout_user.css - Khung giao diện người dùng
+   Topbar trên + Content area + Bản đồ toàn màn hình
+   ============================================================ */
+
+@import "../global/variables.css";
+
+/* ---- TOPBAR ---- */
+.user-topbar {
+  position:    fixed;
+  top:         0; left: 0; right: 0;
+  height:      var(--topbar-height);
+  background:  var(--bg-dark);
+  color:       var(--text-light);
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:     0 var(--spacing-lg);
+  z-index:     var(--z-topbar);
+  box-shadow:  var(--shadow-md);
+}
+
+.topbar-brand {
+  display:     flex;
+  align-items: center;
+  gap:         var(--spacing-sm);
+  font-size:   var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color:       var(--text-light);
+}
+.topbar-brand img { width: 32px; }
+
+.topbar-nav {
+  display:     flex;
+  align-items: center;
+  gap:         var(--spacing-xs);
+}
+.topbar-nav a {
+  color:       rgba(255,255,255,0.8);
+  padding:     6px 14px;
+  border-radius: var(--border-radius);
+  font-size:   var(--font-size-sm);
+  transition:  background var(--transition-fast);
+}
+.topbar-nav a:hover, .topbar-nav a.active {
+  background: rgba(255,255,255,0.15);
+  color:      #fff;
+  text-decoration: none;
+}
+
+.topbar-right {
+  display:     flex;
+  align-items: center;
+  gap:         var(--spacing-md);
+}
+
+/* ---- MAP CONTAINER ---- */
+#map {
+  position:   fixed;
+  top:        var(--topbar-height);
+  left:       0; right: 0;
+  bottom:     0;
+  z-index:    1;
+}
+
+/* ---- SIDE PANEL (tìm đường, lớp bản đồ) ---- */
+.map-panel {
+  position:   absolute;
+  top:        calc(var(--topbar-height) + var(--spacing-md));
+  left:       var(--spacing-md);
+  width:      300px;
+  max-height: calc(100vh - var(--topbar-height) - var(--spacing-xl));
+  overflow-y: auto;
+  z-index:    500;
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--spacing-sm);
+}
+
+.panel-card {
+  background:    var(--bg-card);
+  border-radius: var(--border-radius-lg);
+  box-shadow:    var(--shadow-md);
+  overflow:      hidden;
+}
+.panel-card-header {
+  padding:     var(--spacing-sm) var(--spacing-md);
+  background:  var(--color-primary);
+  color:       #fff;
+  font-weight: var(--font-weight-bold);
+  font-size:   var(--font-size-sm);
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor:      pointer;
+}
+.panel-card-body { padding: var(--spacing-md); }
+
+/* ---- COORDINATE DISPLAY ---- */
+.coord-bar {
+  position:    absolute;
+  bottom:      var(--spacing-sm);
+  left:        50%;
+  transform:   translateX(-50%);
+  background:  rgba(0,0,0,0.7);
+  color:       #fff;
+  padding:     4px 14px;
+  border-radius: var(--border-radius-pill);
+  font-size:   var(--font-size-xs);
+  font-family: monospace;
+  z-index:     500;
+  pointer-events: none;
+}
+
+/* ---- ROUTE RESULT PANEL ---- */
+#route-result-panel {
+  display:    none;
+  background: var(--bg-card);
+  border-radius: var(--border-radius-lg);
+  padding:    var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  border-left: 4px solid var(--color-primary);
+}
+#route-result-panel h4 {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* ---- LAYER TOGGLE ---- */
+.layer-toggle {
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:     6px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size:   var(--font-size-sm);
+}
+.layer-toggle:last-child { border-bottom: none; }
+
+/* Toggle switch */
+.toggle-switch { position: relative; width: 40px; height: 22px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position:    absolute; inset: 0;
+  background:  #ccc;
+  border-radius: var(--border-radius-pill);
+  cursor:      pointer;
+  transition:  var(--transition-fast);
+}
+.toggle-slider:before {
+  content:     "";
+  position:    absolute;
+  width:       16px; height: 16px;
+  left:        3px; bottom: 3px;
+  background:  #fff;
+  border-radius: 50%;
+  transition:  var(--transition-fast);
+}
+input:checked + .toggle-slider { background: var(--color-primary); }
+input:checked + .toggle-slider:before { transform: translateX(18px); }
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .map-panel { width: calc(100vw - 32px); }
+  .topbar-nav { display: none; }
+}
+

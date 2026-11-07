@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bản đồ chính - WebGIS Ngập Đô Thị</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../css/global/reset.css" />
+  <link rel="stylesheet" href="../../css/global/variables.css" />
+  <link rel="stylesheet" href="../../css/global/components.css" />
+  <link rel="stylesheet" href="../../css/layouts/layout_user.css" />
+  <link rel="stylesheet" href="../../css/pages/user_map.css" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     TOPBAR
+     ============================================================ -->
+<header class="user-topbar">
+  <div class="topbar-brand">
+    <img src="../../assets/img/logo.png" alt="Logo" onerror="this.style.display='none'" />
+    🌊 WebGIS Ngập Đô Thị
+  </div>
+
+  <nav class="topbar-nav">
+    <a href="index_map.html"  class="active">🗺️ Bản đồ</a>
+    <a href="report_form.html">📢 Báo cáo</a>
+    <a href="my_reports.html">📋 Của tôi</a>
+    <a href="flood_info.html">ℹ️ Thông tin</a>
+    <a href="about.html">❓ Giới thiệu</a>
+  </nav>
+
+  <div class="topbar-right">
+    <span id="topbar-username" class="text-muted" style="font-size:0.85rem; color:rgba(255,255,255,0.7)"></span>
+    <a href="login_user.html" id="btn-login" class="btn btn-sm btn-primary">🔑 Đăng nhập</a>
+    <button id="btn-logout" class="btn btn-sm btn-danger" style="display:none">🚪 Thoát</button>
+  </div>
+</header>
+
+<!-- ============================================================
+     BẢN ĐỒ
+     ============================================================ -->
+<div id="map"></div>
+
+<!-- ============================================================
+     PANEL BÊN TRÁI (Lớp + Tìm đường)
+     ============================================================ -->
+<div class="map-panel">
+
+  <!-- Panel: Lớp bản đồ -->
+  <div class="panel-card">
+    <div class="panel-card-header" onclick="togglePanel('layer-panel')">
+      🗄️ Lớp dữ liệu <span>▼</span>
+    </div>
+    <div class="panel-card-body" id="layer-panel">
+      <div class="form-group">
+        <label class="form-label">Kịch bản mưa</label>
+        <select class="form-control" id="scenario-select">
+          <option value="100">🌧️ 100mm</option>
+          <option value="200">🌧️🌧️ 200mm</option>
+          <option value="300">⛈️ 300mm</option>
+        </select>
+      </div>
+
+      <div class="layer-toggle">
+        <span>🌊 Vùng ngập</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-flood-zones" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="layer-toggle">
+        <span>💧 Điểm ngập</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-flood-points" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="layer-toggle">
+        <span>🚩 Báo cáo</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-reports" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel: Tìm đường -->
+  <div class="panel-card">
+    <div class="panel-card-header" onclick="togglePanel('routing-panel')">
+      🧭 Tìm đường tránh ngập <span>▼</span>
+    </div>
+    <div class="panel-card-body" id="routing-panel">
+      <div class="form-group">
+        <label class="form-label">📍 Điểm xuất phát</label>
+        <div class="d-flex gap-sm">
+          <span class="form-control" id="start-coord" style="cursor:default; color:var(--text-muted)">
+            Chưa chọn
+          </span>
+          <button class="btn btn-sm btn-outline" id="btn-select-start" title="Chọn trên bản đồ">📌</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">🏁 Điểm đích</label>
+        <div class="d-flex gap-sm">
+          <span class="form-control" id="end-coord" style="cursor:default; color:var(--text-muted)">
+            Chưa chọn
+          </span>
+          <button class="btn btn-sm btn-outline" id="btn-select-end" title="Chọn trên bản đồ">🎯</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Ngưỡng ngập tối đa (m)</label>
+        <input type="number" class="form-control" id="max-depth"
+               value="0.3" min="0" max="1" step="0.1" />
+      </div>
+
+      <div class="d-flex gap-sm">
+        <button class="btn btn-primary btn-block" id="btn-find-route">🔍 Tìm đường</button>
+        <button class="btn btn-secondary"         id="btn-clear-route" title="Xóa">🗑️</button>
+      </div>
+
+      <!-- Kết quả -->
+      <div id="route-result-panel" style="margin-top:var(--spacing-md)"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Hiển thị tọa độ -->
+<div class="coord-bar" id="coord-display">0.00000°N | 0.00000°E</div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script type="module">
+  import { initMapViewer } from "../../js/components/mapViewer.js";
+  import Auth from "../../js/utils/auth.js";
+
+  // Hiện nút đăng xuất nếu đã đăng nhập
+  const user = Auth.getUser();
+  if (user) {
+    document.getElementById("btn-login").style.display    = "none";
+    document.getElementById("btn-logout").style.display   = "";
+    document.getElementById("topbar-username").textContent = user.username;
+  }
+  document.getElementById("btn-logout")?.addEventListener("click", () => Auth.logout());
+
+  // Khởi tạo bản đồ
+  await initMapViewer();
+
+  // Toggle panel
+  window.togglePanel = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === "none" ? "" : "none";
+  };
+</script>
+
+</body>
+</html>
+
